@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Download, MessageCircle, Thermometer, User, Instagram, Globe, X, Calendar, DollarSign, Activity, Tag, BarChart, Phone, Mail, MapPin, Building, Target, CheckCircle2, Edit2, Save, Plus } from 'lucide-react';
+import { Search, Filter, Download, MessageCircle, Thermometer, User, Instagram, Globe, X, Calendar, DollarSign, Activity, Tag, BarChart, Phone, Mail, MapPin, Building, Target, CheckCircle2, Edit2, Save, Plus, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useOrganization } from '../contexts/OrganizationContext';
 import { cn } from '../lib/utils';
@@ -41,6 +41,20 @@ export function Leads() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatPhone = (phone: string) => {
+    if (!phone) return 'S/ contato';
+    const cleaned = phone.replace(/\D/g, '');
+    let digits = cleaned;
+    if (cleaned.startsWith('55') && cleaned.length > 10) {
+      digits = cleaned.slice(2);
+    }
+    if (digits.length !== 11 && digits.length !== 10) return phone;
+    const ddd = digits.slice(0, 2);
+    const part1 = digits.length === 11 ? digits.slice(2, 7) : digits.slice(2, 6);
+    const part2 = digits.length === 11 ? digits.slice(7) : digits.slice(6);
+    return `+55 ${ddd} ${part1}-${part2}`;
   };
 
   const getStatusColor = (status: string) => {
@@ -137,6 +151,14 @@ export function Leads() {
         </div>
         <div className="flex items-center gap-2">
           <button 
+            onClick={fetchLeads}
+            disabled={loading}
+            className="flex items-center justify-center bg-slate-800/50 hover:bg-slate-700 text-slate-300 h-9 w-9 rounded-lg transition-colors border border-slate-700 disabled:opacity-50"
+            title="Atualizar leads"
+          >
+            <RefreshCw size={16} className={cn(loading && "animate-spin")} />
+          </button>
+          <button 
             onClick={() => { setEditForm({ status: 'Novo', temperature: 'Frio', humor: 'Neutro', source: 'Direto' }); setIsAdding(true); }}
             className="flex items-center gap-2 bg-[#75AB61] hover:bg-[#60914E] text-[#0b1120] font-bold px-3 py-2 rounded-lg text-sm transition-colors shadow-[0_0_15px_rgba(117,171,97,0.3)] border-transparent"
           >
@@ -212,7 +234,7 @@ export function Leads() {
               <div className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/30 mb-4 h-[70px] flex flex-col justify-center">
                 <div className="flex items-center gap-2 text-xs text-slate-300">
                   <Phone size={12} className="text-slate-500" />
-                  <span>{lead.contact || 'S/ contato'}</span>
+                  <span>{formatPhone(lead.contact)}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-300 mt-1">
                   <Mail size={12} className="text-slate-500" />
@@ -364,7 +386,7 @@ export function Leads() {
                         <div className="space-y-3">
                           <div className="flex items-center gap-3 text-sm text-slate-300">
                             <Phone size={16} className="text-slate-500" />
-                            <span>{selectedLead.contact || 'Não informado'}</span>
+                            <span>{formatPhone(selectedLead.contact)}</span>
                           </div>
                           <div className="flex items-center gap-3 text-sm text-slate-300">
                             <Mail size={16} className="text-slate-500" />
