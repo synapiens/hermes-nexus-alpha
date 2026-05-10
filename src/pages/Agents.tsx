@@ -53,27 +53,27 @@ export function Agents() {
       // Fetch agents with their personas
       const { data: agentsData, error: agentsError } = await supabase
         .from('agents')
-        .select(`
-          *,
-          agent_personas (*)
-        `)
+        .select('*, agent_personas(*)')
         .eq('organization_id', organization.id);
 
       if (agentsError) throw agentsError;
       
-      if (agentsData && agentsData.length > 0) {
+      if (agentsData) {
         const actives = { ...agentActives };
         const names = { ...agentNames };
         const msgs = { ...agentMsgs };
         const personas = { ...agentPersonas };
         
         for (const agent of agentsData) {
-          const type = agent.type as 'sdr' | 'knowledge' | 'dispatcher' | 'scheduler';
+          const type = agent.type?.toLowerCase() as 'sdr' | 'knowledge' | 'dispatcher' | 'scheduler';
           if (type && actives[type] !== undefined) {
             actives[type] = agent.status === 'ativo';
             names[type] = agent.name || names[type];
             
-            const persona = agent.agent_personas?.[0];
+            // Handle both object and array, and potential property name variations (Supabase/PostgREST quirks)
+            const personaData = agent.agent_personas || agent.agent_persona || agent.agents_persona || agent.agents_personas;
+            const persona = Array.isArray(personaData) ? personaData[0] : personaData;
+
             if (persona) {
               msgs[type] = persona.presentation_message || msgs[type];
               personas[type] = {
