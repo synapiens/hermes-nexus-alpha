@@ -6,8 +6,8 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export function Topbar() {
   const navigate = useNavigate();
-  const { organization, loading, error } = useOrganization();
-  const { signOut } = useAuth();
+  const { organization, userProfile, loading, error } = useOrganization();
+  const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -15,45 +15,53 @@ export function Topbar() {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-[#75AB61]/20 bg-[#1A1A2E]/50 px-6 backdrop-blur-md">
+    <header className="flex h-16 items-center justify-between border-b border-surface-border bg-surface-base/50 px-6 backdrop-blur-md">
       <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-white">
+        <h1 className="text-lg font-bold text-brand-light font-display">
           {error ? `Erro: ${error}` : loading ? 'Carregando...' : organization?.name || 'Synapiens Inc.'}
         </h1>
-        <span className="rounded-full bg-[#75AB61]/10 px-2.5 py-0.5 text-xs font-medium text-[#75AB61] border border-[#75AB61]/20">
+        <span className="rounded-full bg-brand-primary/15 px-2.5 py-0.5 text-[10px] uppercase font-bold text-brand-light border border-brand-primary/30 tracking-wider">
           {loading ? '...' : `Plano ${organization?.plan || 'Enterprise'}`}
         </span>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* ... search and notifications ... */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" size={16} />
           <input 
             type="text" 
             placeholder="Buscar..."
-            className="h-9 w-64 rounded-full border border-slate-700 bg-slate-800/50 pl-9 pr-4 text-sm text-white placeholder-slate-400 focus:border-[#75AB61] focus:outline-none focus:ring-1 focus:ring-[#75AB61]"
+            className="h-9 w-64 rounded-full border border-surface-border bg-surface-muted/50 pl-9 pr-4 text-sm text-brand-light placeholder-brand-muted/70 focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary transition-all"
           />
         </div>
 
         <button 
           onClick={() => navigate('/notifications')}
-          className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+          className="relative flex h-9 w-9 items-center justify-center rounded-full text-brand-muted hover:bg-surface-muted hover:text-brand-light transition-colors"
         >
           <Bell size={20} />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#75AB61]"></span>
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-brand-tertiary shadow-[0_0_8px_rgba(250,210,90,0.5)]"></span>
         </button>
         
         <button 
           onClick={() => navigate('/profile')}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+          className="flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full border border-surface-border bg-surface-muted/30 hover:bg-surface-muted transition-all group"
         >
-          <Settings size={20} />
+          <div className="h-7 w-7 rounded-full bg-brand-primary/20 border border-brand-primary/30 overflow-hidden flex items-center justify-center shrink-0 group-hover:border-brand-primary transition-all">
+            {userProfile?.avatar_url ? (
+              <img src={userProfile.avatar_url} alt="User" className="h-full w-full object-cover" />
+            ) : (
+              <div className="text-[10px] font-bold text-brand-primary">
+                {userProfile?.name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+          </div>
+          <Settings size={18} className="text-brand-muted group-hover:text-brand-light transition-colors" />
         </button>
 
         <button 
           onClick={handleSignOut}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-rose-400 hover:bg-rose-500/10 transition-colors"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-status-failure hover:bg-status-failure/10 transition-colors"
           title="Sair"
         >
           <LogOut size={20} />

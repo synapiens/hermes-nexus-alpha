@@ -59,12 +59,12 @@ export function Leads() {
 
   const getStatusColor = (status: string) => {
     switch(status) {
-        case 'Novo': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-        case 'Em Atendimento': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-        case 'Qualificado': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-        case 'Convertido': return 'bg-[#75AB61]/20 text-[#75AB61] border-[#75AB61]/30';
-        case 'Perdido': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-        default: return 'bg-slate-700/50 text-slate-400 border-slate-600/50';
+        case 'Novo': return 'bg-brand-secondary/20 text-brand-secondary border-brand-secondary/30';
+        case 'Em Atendimento': return 'bg-brand-tertiary/20 text-brand-tertiary border-brand-tertiary/30';
+        case 'Qualificado': return 'bg-brand-primary/20 text-brand-primary border-brand-primary/30';
+        case 'Convertido': return 'bg-status-success/20 text-status-success border-status-success/30';
+        case 'Perdido': return 'bg-status-failure/20 text-status-failure border-status-failure/30';
+        default: return 'bg-surface-muted/50 text-brand-muted border-surface-border';
     }
   };
 
@@ -146,25 +146,25 @@ export function Leads() {
     <div className="space-y-6 h-full flex flex-col relative">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Gestão de Leads</h1>
-          <p className="text-slate-400 text-sm mt-1">Acompanhamento e perfil de contatos</p>
+          <h1 className="text-2xl font-bold text-brand-light font-display">Gestão de Leads</h1>
+          <p className="text-brand-muted text-sm mt-1">Acompanhamento e perfil de contatos</p>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={fetchLeads}
             disabled={loading}
-            className="flex items-center justify-center bg-slate-800/50 hover:bg-slate-700 text-slate-300 h-9 w-9 rounded-lg transition-colors border border-slate-700 disabled:opacity-50"
+            className="flex items-center justify-center bg-surface-muted/50 hover:bg-surface-muted text-brand-muted h-9 w-9 rounded-lg transition-colors border border-surface-border disabled:opacity-50"
             title="Atualizar leads"
           >
             <RefreshCw size={16} className={cn(loading && "animate-spin")} />
           </button>
           <button 
             onClick={() => { setEditForm({ status: 'Novo', temperature: 'Frio', humor: 'Neutro', source: 'Direto' }); setIsAdding(true); }}
-            className="flex items-center gap-2 bg-[#75AB61] hover:bg-[#60914E] text-[#0b1120] font-bold px-3 py-2 rounded-lg text-sm transition-colors shadow-[0_0_15px_rgba(117,171,97,0.3)] border-transparent"
+            className="flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/80 text-brand-on-primary font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(42,75,51,0.3)] border-transparent"
           >
             <Plus size={16} /> Novo Lead
           </button>
-          <button className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm transition-colors border border-slate-700">
+          <button className="flex items-center gap-2 bg-surface-muted/50 hover:bg-surface-muted text-brand-muted px-4 py-2 rounded-lg text-sm transition-colors border border-surface-border">
             <Download size={16} /> Exportar
           </button>
         </div>
@@ -173,14 +173,14 @@ export function Leads() {
       <div className="card-surface rounded-xl p-4 flex flex-wrap gap-3 items-center justify-between">
         <div className="flex items-center gap-3 flex-1 min-w-[200px]">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" size={16} />
             <input 
               type="text" 
               placeholder="Buscar por nome, contato..."
-              className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 pl-9 pr-4 text-sm text-white placeholder-slate-400 focus:border-[#75AB61] focus:outline-none focus:ring-1 focus:ring-[#75AB61]"
+              className="w-full h-10 rounded-lg border border-surface-border bg-surface-muted/50 pl-9 pr-4 text-sm text-brand-light placeholder-brand-muted/70 focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700 text-white px-3 h-10 rounded-lg text-sm border border-slate-700">
+          <button className="flex items-center gap-2 bg-surface-muted/50 hover:bg-surface-muted text-brand-light px-4 h-10 rounded-lg text-sm border border-surface-border">
             <Filter size={16} /> Filtros
           </button>
         </div>
@@ -189,55 +189,55 @@ export function Leads() {
       <div className="flex-1 overflow-auto pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {leads.map((lead) => (
-            <div key={lead.id} className="card-surface rounded-xl p-5 hover:border-[#75AB61]/50 transition-colors group">
+            <div key={lead.id} className="card-surface rounded-xl p-5 hover:border-brand-primary/50 transition-all group hover:translate-y-[-2px]">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-slate-700 overflow-hidden border border-[#75AB61]/30 flex items-center justify-center">
+                  <div className="h-10 w-10 rounded-full bg-surface-muted overflow-hidden border border-brand-primary/30 flex items-center justify-center">
                     {lead.avatar_url ? (
                       <img src={lead.avatar_url} alt={lead.name} className="h-full w-full object-cover" />
                     ) : (
-                      <span className="text-lg font-bold text-white uppercase brand-gradient w-full h-full flex items-center justify-center">
+                      <span className="text-lg font-bold text-brand-light uppercase bg-brand-primary w-full h-full flex items-center justify-center font-display">
                         {lead.name ? lead.name.charAt(0) : '?'}
                       </span>
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-base">{lead.name}</h3>
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-                      <Globe size={12} className="text-slate-500" />
-                      <span className="capitalize">{lead.source || 'Direto'}</span>
+                    <h3 className="font-bold text-brand-light text-base font-display">{lead.name}</h3>
+                    <div className="flex items-center gap-2 text-[10px] text-brand-muted mt-0.5 font-bold uppercase tracking-wider">
+                      <Globe size={11} className="text-brand-primary" />
+                      <span>{lead.source || 'Direto'}</span>
                     </div>
                   </div>
                 </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <span className={cn("px-2 py-0.5 rounded text-[10px] uppercase font-bold border", getStatusColor(lead.status))}>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <span className={cn("px-2 py-0.5 rounded text-[9px] uppercase font-bold border tracking-tighter", getStatusColor(lead.status))}>
                       {lead.status}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm" title={lead.humor}>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-sm bg-surface-muted w-6 h-6 flex items-center justify-center rounded-full" title={lead.humor}>
                         {lead.humor === 'Satisfeito' ? '😊' : lead.humor === 'Insatisfeito' ? '😠' : '😐'}
                       </span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 bg-surface-muted px-1.5 py-0.5 rounded-full border border-surface-border">
                         <Thermometer 
-                          size={12} 
+                          size={11} 
                           className={
-                            lead.temperature === 'Quente' ? 'text-rose-400' : 
-                            lead.temperature === 'Morno' ? 'text-amber-400' : 'text-blue-400'
+                            lead.temperature === 'Quente' ? 'text-status-failure' : 
+                            lead.temperature === 'Morno' ? 'text-brand-tertiary' : 'text-brand-secondary'
                           } 
                         />
-                        <span className="text-[10px] font-bold uppercase text-slate-400">{lead.temperature}</span>
+                        <span className="text-[9px] font-bold uppercase text-brand-muted tracking-tight">{lead.temperature}</span>
                       </div>
                     </div>
                   </div>
               </div>
               
-              <div className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/30 mb-4 h-[70px] flex flex-col justify-center">
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <Phone size={12} className="text-slate-500" />
+              <div className="bg-surface-muted/30 rounded-lg p-3 border border-surface-border mb-4 h-[70px] flex flex-col justify-center">
+                <div className="flex items-center gap-2 text-xs text-brand-light/90 font-medium tracking-tight">
+                  <Phone size={12} className="text-brand-primary/70" />
                   <span>{formatPhone(lead.contact)}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 mt-1">
-                  <Mail size={12} className="text-slate-500" />
+                <div className="flex items-center gap-2 text-xs text-brand-muted mt-1.5">
+                  <Mail size={12} className="text-brand-primary/70" />
                   <span className="truncate">{lead.email || 'S/ e-mail'}</span>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export function Leads() {
               <div className="flex items-center justify-end">
                 <button 
                   onClick={() => setSelectedLead(lead)}
-                  className="text-xs bg-slate-800 hover:bg-slate-700 focus:outline-none text-white px-3 py-1.5 rounded transition-colors border border-slate-700"
+                  className="text-[11px] font-bold uppercase tracking-wider bg-surface-muted hover:bg-brand-primary hover:text-brand-light focus:outline-none text-brand-muted px-4 py-2 rounded-lg transition-all border border-surface-border"
                 >
                   Ver Perfil
                 </button>
@@ -257,77 +257,77 @@ export function Leads() {
 
       {/* LEAD PROFILE MODAL */}
       {(selectedLead || isAdding) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#111A22] border border-slate-700 rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-full h-[80vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-surface-base border border-surface-border rounded-2xl w-full max-w-4xl shadow-[0_0_50px_rgba(42,75,51,0.2)] flex flex-col max-h-full h-[85vh] overflow-hidden">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-slate-700/50 bg-[#0b1120]/50 rounded-t-2xl shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full overflow-hidden flex items-center justify-center bg-slate-700 border border-[#75AB61]/30">
+            <div className="flex items-center justify-between p-6 border-b border-surface-border bg-surface-base/80 rounded-t-2xl shrink-0">
+              <div className="flex items-center gap-5">
+                <div className="h-14 w-14 rounded-full overflow-hidden flex items-center justify-center bg-surface-muted border-2 border-brand-primary/30">
                   {(isAdding ? false : selectedLead?.avatar_url) ? (
                     <img src={selectedLead.avatar_url} alt="Lead" className="h-full w-full object-cover" />
                   ) : (
-                    <User size={24} className="text-slate-400" />
+                    <User size={28} className="text-brand-muted" />
                   )}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white leading-tight">
+                  <h2 className="text-2xl font-bold text-brand-light leading-tight font-display">
                     {isAdding ? 'Novo Lead' : (isEditing ? 'Editar Lead' : selectedLead?.name)}
                   </h2>
                   {!isAdding && !isEditing && selectedLead && (
-                    <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
-                      <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider">{selectedLead.status}</span>
-                      <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-                      <span className="flex items-center gap-1.5">{selectedLead.source}</span>
+                    <div className="flex items-center gap-3 text-[10px] text-brand-muted mt-1.5 font-bold uppercase tracking-[0.1em]">
+                      <span className="text-brand-primary">{selectedLead.status}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-surface-border"></span>
+                      <span>{selectedLead.source}</span>
                     </div>
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 {!isAdding && !isEditing && (
-                  <button onClick={() => handleEditClick(selectedLead)} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-lg transition-colors border border-slate-700 flex items-center gap-2">
-                    <Edit2 size={16} /> Editar
+                  <button onClick={() => handleEditClick(selectedLead)} className="px-5 py-2.5 bg-surface-muted hover:bg-surface-border text-brand-light text-xs font-bold uppercase tracking-wider rounded-xl transition-all border border-surface-border flex items-center gap-2">
+                    <Edit2 size={16} className="text-brand-primary" /> Editar
                   </button>
                 )}
                 {(isEditing || isAdding) && (
-                  <button onClick={isAdding ? handleCreateLead : handleSaveEdit} className="px-4 py-2 bg-[#75AB61] hover:bg-[#60914E] text-[#0b1120] text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(117,171,97,0.3)] border-transparent flex items-center gap-2">
+                  <button onClick={isAdding ? handleCreateLead : handleSaveEdit} className="px-5 py-2.5 bg-brand-primary hover:bg-brand-primary/80 text-brand-on-primary text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg border-transparent flex items-center gap-2">
                     <Save size={16} /> Salvar
                   </button>
                 )}
 
                 <button 
                   onClick={() => { setSelectedLead(null); setIsEditing(false); setIsAdding(false); setEditForm({}); }}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors ml-2"
+                  className="p-2.5 text-brand-muted hover:text-brand-light hover:bg-surface-muted rounded-xl transition-all ml-2"
                 >
-                  <X size={20} />
+                  <X size={24} />
                 </button>
               </div>
             </div>
 
             {/* Modal Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
               
               {(isEditing || isAdding) ? (
                 // EDIT / CREATE FORM
-                <div className="space-y-6">
-                  <div className="card-surface rounded-xl p-5 border border-slate-700/50">
-                    <h3 className="text-sm font-bold text-white mb-4 border-b border-slate-700/50 pb-2">Informações Principais</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-8">
+                  <div className="card-surface rounded-2xl p-6 border border-surface-border">
+                    <h3 className="text-xs font-bold text-brand-light uppercase tracking-widest mb-6 border-b border-surface-border pb-3">Informações Principais</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="sm:col-span-2">
-                        <label className="block text-xs text-slate-400 font-bold mb-1">Nome Completo</label>
-                        <input type="text" value={editForm.name || ''} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="Nome do lead" />
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Nome Completo</label>
+                        <input type="text" value={editForm.name || ''} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="Nome do lead" />
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-400 font-bold mb-1">E-mail</label>
-                        <input type="email" value={editForm.email || ''} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="email@exemplo.com" />
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">E-mail</label>
+                        <input type="email" value={editForm.email || ''} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="email@exemplo.com" />
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-400 font-bold mb-1">Contato (Telefone)</label>
-                        <input type="text" value={editForm.contact || ''} onChange={e => setEditForm({...editForm, contact: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="(00) 00000-0000" />
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Contato (Telefone)</label>
+                        <input type="text" value={editForm.contact || ''} onChange={e => setEditForm({...editForm, contact: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="(00) 00000-0000" />
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-400 font-bold mb-1">Status</label>
-                        <select value={editForm.status || 'Novo'} onChange={e => setEditForm({...editForm, status: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none">
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Status</label>
+                        <select value={editForm.status || 'Novo'} onChange={e => setEditForm({...editForm, status: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none transition-all appearance-none">
                           <option value="Novo">Novo</option>
                           <option value="Em Atendimento">Em Atendimento</option>
                           <option value="Qualificado">Qualificado</option>
@@ -336,41 +336,41 @@ export function Leads() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-400 font-bold mb-1">Temperatura</label>
-                        <select value={editForm.temperature || 'Frio'} onChange={e => setEditForm({...editForm, temperature: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none">
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Temperatura</label>
+                        <select value={editForm.temperature || 'Frio'} onChange={e => setEditForm({...editForm, temperature: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none transition-all appearance-none">
                           <option value="Frio">Frio</option>
                           <option value="Morno">Morno</option>
                           <option value="Quente">Quente</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-400 font-bold mb-1">Humor (Sentimento)</label>
-                        <select value={editForm.humor || 'Neutro'} onChange={e => setEditForm({...editForm, humor: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none">
+                        <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Humor (Sentimento)</label>
+                        <select value={editForm.humor || 'Neutro'} onChange={e => setEditForm({...editForm, humor: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none transition-all appearance-none">
                           <option value="Satisfeito">😊 Satisfeito</option>
                           <option value="Neutro">😐 Neutro</option>
                           <option value="Insatisfeito">😠 Insatisfeito</option>
                         </select>
                       </div>
                       <div>
-                         <label className="block text-xs text-slate-400 font-bold mb-1">Origem / Canal</label>
-                         <input type="text" value={editForm.source || ''} onChange={e => setEditForm({...editForm, source: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="Ex: Instagram, Direto, etc" />
+                         <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Origem / Canal</label>
+                         <input type="text" value={editForm.source || ''} onChange={e => setEditForm({...editForm, source: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="Ex: Instagram, Direto, etc" />
                       </div>
                       <div>
-                         <label className="block text-xs text-slate-400 font-bold mb-1">Avatar URL</label>
-                         <input type="text" value={editForm.avatar_url || ''} onChange={e => setEditForm({...editForm, avatar_url: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="https://..." />
+                         <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">Avatar URL</label>
+                         <input type="text" value={editForm.avatar_url || ''} onChange={e => setEditForm({...editForm, avatar_url: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="https://..." />
                       </div>
-                      <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div>
-                           <label className="block text-xs text-slate-400 font-bold mb-1">WhatsApp ID</label>
-                           <input type="text" value={editForm.wht_id || ''} onChange={e => setEditForm({...editForm, wht_id: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="ID" />
+                           <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">WhatsApp ID</label>
+                           <input type="text" value={editForm.wht_id || ''} onChange={e => setEditForm({...editForm, wht_id: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="ID" />
                         </div>
                         <div>
-                           <label className="block text-xs text-slate-400 font-bold mb-1">WhatsApp LID</label>
-                           <input type="text" value={editForm.wht_lid || ''} onChange={e => setEditForm({...editForm, wht_lid: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="LID" />
+                           <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">WhatsApp LID</label>
+                           <input type="text" value={editForm.wht_lid || ''} onChange={e => setEditForm({...editForm, wht_lid: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="LID" />
                         </div>
                         <div>
-                           <label className="block text-xs text-slate-400 font-bold mb-1">WhatsApp Nome Contato</label>
-                           <input type="text" value={editForm.wht_cnt_nome || ''} onChange={e => setEditForm({...editForm, wht_cnt_nome: e.target.value})} className="w-full h-10 rounded-lg border border-slate-700 bg-slate-800/50 px-3 text-sm text-white focus:border-[#75AB61] focus:outline-none placeholder-slate-600" placeholder="Nome" />
+                           <label className="block text-[10px] text-brand-muted font-bold uppercase tracking-wider mb-2">WhatsApp Nome Contato</label>
+                           <input type="text" value={editForm.wht_cnt_nome || ''} onChange={e => setEditForm({...editForm, wht_cnt_nome: e.target.value})} className="w-full h-11 rounded-xl border border-surface-border bg-surface-muted/30 px-4 text-sm text-brand-light focus:border-brand-primary focus:outline-none placeholder-brand-muted/50 transition-all" placeholder="Nome" />
                         </div>
                       </div>
                     </div>
@@ -379,51 +379,55 @@ export function Leads() {
               ) : (
                 // VIEW PROFILE
                 selectedLead && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="space-y-6">
-                      <div className="card-surface rounded-xl p-5 border border-slate-700/50 space-y-4">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contato</h3>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 text-sm text-slate-300">
-                            <Phone size={16} className="text-slate-500" />
+                      <div className="card-surface rounded-2xl p-6 border border-surface-border space-y-5">
+                        <h3 className="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-2 px-1">Contato</h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4 text-sm text-brand-light font-medium">
+                            <div className="w-8 h-8 rounded-lg bg-surface-muted flex items-center justify-center border border-surface-border">
+                              <Phone size={16} className="text-brand-primary" />
+                            </div>
                             <span>{formatPhone(selectedLead.contact)}</span>
                           </div>
-                          <div className="flex items-center gap-3 text-sm text-slate-300">
-                            <Mail size={16} className="text-slate-500" />
+                          <div className="flex items-center gap-4 text-sm text-brand-light font-medium">
+                            <div className="w-8 h-8 rounded-lg bg-surface-muted flex items-center justify-center border border-surface-border">
+                              <Mail size={16} className="text-brand-primary" />
+                            </div>
                             <span className="truncate">{selectedLead.email || 'Não informado'}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="card-surface rounded-xl p-5 border border-slate-700/50 space-y-4">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Classificação</h3>
-                        <div className="grid grid-cols-1 gap-3">
-                           <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                             <span className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Status Atual</span>
-                             <span className={cn("inline-block px-2 py-0.5 rounded text-xs font-bold border mt-1", getStatusColor(selectedLead.status))}>
+                      <div className="card-surface rounded-2xl p-6 border border-surface-border space-y-6">
+                        <h3 className="text-[10px] font-bold text-brand-muted uppercase tracking-widest mb-2 px-1">Classificação</h3>
+                        <div className="grid grid-cols-1 gap-4">
+                           <div className="bg-surface-muted/30 p-4 rounded-xl border border-surface-border">
+                             <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-wider mb-2">Status Atual</span>
+                             <span className={cn("inline-block px-3 py-1 rounded text-[10px] font-bold uppercase tracking-tighter border", getStatusColor(selectedLead.status))}>
                                 {selectedLead.status}
                              </span>
                            </div>
-                           <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                             <span className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Temperatura</span>
-                             <span className="flex items-center gap-1.5 text-sm font-bold capitalize text-white">
-                                <Thermometer size={14} className={selectedLead.temperature === 'Quente' ? 'text-rose-400' : selectedLead.temperature === 'Morno' ? 'text-amber-400' : 'text-blue-400'} />
+                           <div className="bg-surface-muted/30 p-4 rounded-xl border border-surface-border">
+                             <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-wider mb-2">Temperatura</span>
+                             <span className="flex items-center gap-2 text-sm font-bold uppercase tracking-tight text-brand-light font-display">
+                                <Thermometer size={16} className={selectedLead.temperature === 'Quente' ? 'text-status-failure' : selectedLead.temperature === 'Morno' ? 'text-brand-tertiary' : 'text-brand-secondary'} />
                                 {selectedLead.temperature}
                              </span>
                            </div>
-                           <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                             <span className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Humor / Sentimento</span>
-                             <span className="flex items-center gap-2 text-sm font-bold text-white mt-1">
-                                <span className="text-xl">
+                           <div className="bg-surface-muted/30 p-4 rounded-xl border border-surface-border">
+                             <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-wider mb-2">Humor / Sentimento</span>
+                             <span className="flex items-center gap-3 text-sm font-bold text-brand-light mt-1 font-display">
+                                <span className="text-2xl bg-surface-base w-10 h-10 flex items-center justify-center rounded-full shadow-inner">
                                   {selectedLead.humor === 'Satisfeito' ? '😊' : selectedLead.humor === 'Insatisfeito' ? '😠' : '😐'}
                                 </span>
                                 {selectedLead.humor || 'Neutro'}
                              </span>
                            </div>
-                           <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                             <span className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Criado em</span>
-                             <span className="flex items-center gap-1.5 text-xs font-bold text-white">
-                                <Calendar size={14} className="text-slate-500" />
+                           <div className="bg-surface-muted/30 p-4 rounded-xl border border-surface-border">
+                             <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-wider mb-2">Criado em</span>
+                             <span className="flex items-center gap-2 text-xs font-bold text-brand-light font-display">
+                                <Calendar size={16} className="text-brand-primary" />
                                 {new Date(selectedLead.created_at).toLocaleDateString('pt-BR')}
                              </span>
                            </div>
@@ -431,48 +435,46 @@ export function Leads() {
                       </div>
                     </div>
 
-                    <div className="lg:col-span-2 space-y-6">
-                      <div className="card-surface rounded-xl p-6 border border-slate-700/50">
-                        <h3 className="text-sm font-bold text-white mb-4">Detalhes Adicionais</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="lg:col-span-2 space-y-8">
+                      <div className="card-surface rounded-2xl p-8 border border-surface-border">
+                        <h3 className="text-sm font-bold text-brand-light uppercase tracking-widest mb-8 border-b border-surface-border pb-4">Detalhes Adicionais</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                           <div>
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Origem do Lead</span>
-                            <div className="flex items-center gap-2 text-sm font-bold text-white">
-                              <Globe size={16} className="text-blue-400" />
+                            <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-widest mb-2">Origem do Lead</span>
+                            <div className="flex items-center gap-3 text-sm font-bold text-brand-light font-display">
+                              <Globe size={18} className="text-brand-secondary" />
                               {selectedLead.source}
                             </div>
                           </div>
                           <div>
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">ID Externo (WhatsApp)</span>
-                            <div className="text-sm font-mono text-slate-300 bg-slate-800/50 px-2 py-1 rounded border border-slate-700 flex items-center justify-between">
+                            <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-widest mb-2">ID Externo (WhatsApp)</span>
+                            <div className="text-xs font-mono text-brand-muted bg-surface-muted px-3 py-2 rounded-lg border border-surface-border">
                               {selectedLead.wht_id || 'Não disponível'}
                             </div>
                           </div>
                           <div>
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Lead ID WhatsApp (LID)</span>
-                            <div className="text-sm font-mono text-slate-300 bg-slate-800/50 px-2 py-1 rounded border border-slate-700 flex items-center justify-between">
+                            <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-widest mb-2">Lead ID WhatsApp (LID)</span>
+                            <div className="text-xs font-mono text-brand-muted bg-surface-muted px-3 py-2 rounded-lg border border-surface-border">
                               {selectedLead.wht_lid || 'Não disponível'}
                             </div>
                           </div>
                           <div className="sm:col-span-2">
-                             <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Nome de Contato WhatsApp</span>
-                             <div className="text-sm text-slate-300">
+                             <span className="block text-[9px] text-brand-muted uppercase font-bold tracking-widest mb-2">Nome de Contato WhatsApp</span>
+                             <div className="text-sm text-brand-light font-medium bg-surface-muted/50 p-3 rounded-lg border border-surface-border">
                                {selectedLead.wht_cnt_nome || 'Nenhum'}
                              </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="bg-[#75AB61]/10 rounded-xl p-5 border border-[#75AB61]/20">
-                         <div className="flex items-center gap-4">
-                           <div className="w-10 h-10 rounded-full bg-[#75AB61]/20 border border-[#75AB61]/30 flex items-center justify-center text-[#75AB61] shrink-0">
-                             <MessageCircle size={20} />
-                           </div>
-                           <div>
-                             <h3 className="text-sm font-bold text-white mb-0.5">Integrar com Chat</h3>
-                             <p className="text-xs text-slate-400">Você pode iniciar uma conversa com este lead através dos canais conectados.</p>
-                           </div>
-                         </div>
+                      <div className="bg-brand-primary/10 rounded-2xl p-6 border border-brand-primary/20 flex items-center gap-6 group hover:bg-brand-primary/15 transition-all">
+                        <div className="w-14 h-14 rounded-2xl bg-brand-primary/20 border border-brand-primary/30 flex items-center justify-center text-brand-primary shrink-0 group-hover:scale-110 transition-transform">
+                          <MessageCircle size={28} />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-brand-light mb-1 font-display">Integrar com Chat</h3>
+                          <p className="text-xs text-brand-muted font-medium leading-relaxed">Inicie conversas instantâneas através dos canais conectados e centralize sua comunicação.</p>
+                        </div>
                       </div>
                     </div>
                   </div>

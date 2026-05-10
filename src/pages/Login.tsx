@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, Eye, EyeOff, Loader2, CheckCircle2, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, CheckCircle2, ArrowLeft, ShieldCheck, Sun, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
+import { useTheme } from '../contexts/ThemeContext';
 
 type ViewState = 'login' | 'recovery' | 'recovery_sent' | 'reset';
 
 export function Login() {
+  const { theme, toggleTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [view, setView] = useState<ViewState>('login');
@@ -89,7 +91,7 @@ export function Login() {
   // Password strength logic
   const getPasswordStrength = (pass: string) => {
     let score = 0;
-    if (!pass) return { score: 0, text: '', color: 'bg-slate-700' };
+    if (!pass) return { score: 0, text: '', color: 'bg-surface-muted' };
     if (pass.length > 7) score += 1;
     if (/[A-Z]/.test(pass)) score += 1;
     if (/[0-9]/.test(pass)) score += 1;
@@ -97,48 +99,65 @@ export function Login() {
 
     switch (score) {
       case 0:
-      case 1: return { score, text: 'Fraca', color: 'bg-red-500' };
-      case 2: return { score, text: 'Média', color: 'bg-yellow-500' };
-      case 3: return { score, text: 'Forte', color: 'bg-emerald-500' };
-      case 4: return { score, text: 'Muito Forte', color: 'bg-[#75AB61]' };
-      default: return { score: 0, text: '', color: 'bg-slate-700' };
+      case 1: return { score, text: 'Fraca', color: 'bg-status-failure' };
+      case 2: return { score, text: 'Média', color: 'bg-brand-tertiary' };
+      case 3: return { score, text: 'Forte', color: 'bg-brand-secondary' };
+      case 4: return { score, text: 'Muito Forte', color: 'bg-brand-primary' };
+      default: return { score: 0, text: '', color: 'bg-surface-muted' };
     }
   };
 
   const strength = getPasswordStrength(newPassword);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#0b1120] overflow-hidden">
+    <div className="relative flex min-h-screen items-center justify-center bg-surface-base overflow-hidden transition-colors duration-300">
+      {/* Theme Toggle in Login */}
+      <div className="absolute top-6 right-6 z-20">
+        <button 
+          onClick={toggleTheme}
+          className="p-3 rounded-2xl bg-surface-muted/30 border border-surface-border text-brand-muted hover:text-brand-light transition-all backdrop-blur-md"
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+      </div>
+
       {/* Background radial gradient and glowing elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1A1A2E] via-[#0b1120] to-[#0b1120] z-0"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-surface-muted),_var(--color-surface-base))] z-0 opacity-40"></div>
       
       {/* Subtle animated waves/connections representation */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] z-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 rounded-full border border-[#75AB61]/10 bg-[#75AB61]/5 blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
-        <div className="absolute inset-[10%] rounded-full border border-[#A2C794]/20 bg-[#A2C794]/5 blur-2xl animate-pulse" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] z-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0 rounded-full border border-brand-primary/10 bg-brand-primary/5 blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+        <div className="absolute inset-[10%] rounded-full border border-brand-muted/20 bg-brand-muted/5 blur-2xl animate-pulse" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
       </div>
       
       <div className="relative z-10 w-full max-w-[420px] p-6 lg:p-8">
-        <div className="mb-8 flex flex-col items-center">
-          <img src="https://raw.githubusercontent.com/synapiens/uteis/refs/heads/main/LogoHermes/logo_hermes_nexus_negat.png" alt="Hermes Nexus" className="h-[72px] object-contain mb-3 drop-shadow-lg" />
-          <p className="text-slate-400 text-sm mt-1 font-medium tracking-wide">Acesso exclusivo à plataforma</p>
+        <div className="mb-10 flex flex-col items-center">
+          <img 
+            src={theme === 'dark' 
+              ? "https://raw.githubusercontent.com/synapiens/uteis/refs/heads/main/LogoHermes/logo_hermes_nexus_negat.png"
+              : "https://raw.githubusercontent.com/synapiens/uteis/refs/heads/main/LogoHermes/logo_hermes_nexus.png"
+            } 
+            alt="Hermes Nexus" 
+            className="h-[80px] object-contain mb-4 drop-shadow-[0_0_15px_rgba(42,75,51,0.4)]" 
+          />
+          <p className="text-brand-muted text-[10px] uppercase font-bold tracking-[0.2em] opacity-80">Acesso exclusivo à plataforma</p>
         </div>
 
         {/* Dynamic Card based on ViewState */}
         <div className={cn(
-          "rounded-2xl p-6 sm:p-8 transition-all duration-300 relative backdrop-blur-xl shadow-2xl shadow-[#000000]/50",
-          "bg-[#111A22]/80 border border-cyan-500/20", // Superfície #75AB61 semitransparente interpretada como fundo escuro com tint verde e borda ciano/verde
-          error ? "border-red-500/50 shadow-red-500/10" : "border-[#75AB61]/30"
+          "rounded-3xl p-8 sm:p-10 transition-all duration-300 relative backdrop-blur-2xl shadow-2xl",
+          "bg-surface-base/80 border border-brand-primary/20",
+          error ? "border-status-failure/50" : "border-brand-primary/30"
         )}>
           
           {/* LOGIN VIEW */}
           {view === 'login' && (
             <form onSubmit={handleLogin} className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">E-mail corporativo</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#75AB61]">
+                  <label className="block text-[10px] font-bold text-brand-muted mb-2 uppercase tracking-widest px-1">E-mail corporativo</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-primary transition-colors group-focus-within:text-brand-secondary">
                       <Mail size={18} />
                     </div>
                     <input 
@@ -146,8 +165,8 @@ export function Login() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className={cn(
-                        "block w-full rounded-xl border bg-[#0b1120]/50 p-3 pl-10 text-sm text-white placeholder-slate-500 transition-all focus:outline-none focus:ring-2 focus:border-transparent",
-                        error ? "border-red-500/50 focus:ring-red-500/50" : "border-slate-700/50 focus:ring-[#75AB61]"
+                        "block w-full rounded-2xl border bg-surface-muted/30 p-3.5 pl-11 text-sm text-brand-light placeholder-brand-muted/40 transition-all focus:outline-none focus:ring-1 focus:bg-surface-muted/50",
+                        error ? "border-status-failure/50 focus:ring-status-failure/50" : "border-surface-border focus:ring-brand-primary/50 focus:border-brand-primary"
                       )}
                       placeholder="nome@empresa.com"
                       required
@@ -156,9 +175,9 @@ export function Login() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Senha</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#75AB61]">
+                  <label className="block text-[10px] font-bold text-brand-muted mb-2 uppercase tracking-widest px-1">Senha</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-primary transition-colors group-focus-within:text-brand-secondary">
                       <Lock size={18} />
                     </div>
                     <input 
@@ -166,8 +185,8 @@ export function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className={cn(
-                        "block w-full rounded-xl border bg-[#0b1120]/50 p-3 pl-10 pr-10 text-sm text-white placeholder-slate-500 transition-all focus:outline-none focus:ring-2 focus:border-transparent",
-                        error ? "border-red-500/50 focus:ring-red-500/50" : "border-slate-700/50 focus:ring-[#75AB61]"
+                        "block w-full rounded-2xl border bg-surface-muted/30 p-3.5 pl-11 pr-11 text-sm text-brand-light placeholder-brand-muted/40 transition-all focus:outline-none focus:ring-1 focus:bg-surface-muted/50",
+                        error ? "border-status-failure/50 focus:ring-status-failure/50" : "border-surface-border focus:ring-brand-primary/50 focus:border-brand-primary"
                       )}
                       placeholder="Sua senha de acesso"
                       required
@@ -175,7 +194,7 @@ export function Login() {
                     <button 
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-white transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-brand-muted hover:text-brand-light transition-colors"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -183,55 +202,57 @@ export function Login() {
                 </div>
 
                 {error && (
-                  <div className="text-red-400 text-xs font-medium bg-red-400/10 p-2.5 rounded-lg border border-red-400/20 text-center animate-in fade-in slide-in-from-top-1">
+                  <div className="text-status-failure text-[11px] font-bold uppercase tracking-tight bg-status-failure/10 p-3 rounded-xl border border-status-failure/20 text-center animate-in fade-in slide-in-from-top-1 font-display">
                     {error}
                   </div>
                 )}
 
                 <div className="flex items-center justify-between pt-1">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <div className="relative flex items-center justify-center w-4 h-4">
-                      <input type="checkbox" className="peer appearance-none w-4 h-4 rounded border border-slate-600 bg-slate-800 checked:bg-[#75AB61] checked:border-[#75AB61] transition-colors focus:ring-2 focus:ring-[#75AB61] focus:ring-offset-2 focus:ring-offset-[#111A22]" />
-                      <CheckCircle2 size={12} className="absolute text-[#0b1120] opacity-0 peer-checked:opacity-100 pointer-events-none" />
+                  <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <div className="relative flex items-center justify-center w-5 h-5">
+                      <input type="checkbox" className="peer appearance-none w-5 h-5 rounded-lg border border-surface-border bg-surface-muted/50 checked:bg-brand-primary checked:border-brand-primary transition-all focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 focus:ring-offset-surface-base" />
+                      <CheckCircle2 size={14} className="absolute text-brand-light opacity-0 peer-checked:opacity-100 pointer-events-none" />
                     </div>
-                    <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Lembrar acesso</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-brand-muted group-hover:text-brand-light transition-colors">Lembrar</span>
                   </label>
                   <button 
                     type="button" 
                     onClick={() => { setView('recovery'); setError(''); }}
-                    className="text-sm font-medium text-[#A2C794] hover:text-white transition-colors"
+                    className="text-xs font-bold uppercase tracking-wider text-brand-muted hover:text-brand-primary transition-colors"
                   >
-                    Esqueci minha senha
+                    Esqueci a senha
                   </button>
                 </div>
               </div>
 
-              <button 
-                type="submit" 
-                disabled={isLoading}
-                className="relative w-full overflow-hidden rounded-xl bg-[#75AB61] hover:bg-[#A2C794] px-5 py-3.5 text-sm font-bold text-[#0b1120] transition-all hover:shadow-[0_0_20px_rgba(117,171,97,0.4)] focus:outline-none focus:ring-2 focus:ring-[#75AB61] focus:ring-offset-2 focus:ring-offset-[#111A22] disabled:opacity-70 disabled:cursor-not-allowed group"
-              >
-                {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 size={18} className="animate-spin text-[#0b1120]" />
-                    Autenticando...
-                  </span>
-                ) : (
-                  <span>Entrar</span>
-                )}
-              </button>
-              
-              <button 
-                type="button" 
-                onClick={() => navigate('/dashboard')}
-                className="w-full mt-3 rounded-xl border border-dashed border-[#75AB61]/50 bg-[#75AB61]/10 px-5 py-3 text-sm font-bold text-[#75AB61] hover:bg-[#75AB61]/20 transition-all focus:outline-none"
-              >
-                Entrar (Modo Dev - Sem Senha)
-              </button>
+              <div className="space-y-4 pt-2">
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="relative w-full overflow-hidden rounded-2xl bg-brand-primary hover:bg-brand-primary/80 px-5 py-4 text-xs font-bold uppercase tracking-[0.2em] text-brand-on-primary transition-all hover:shadow-[0_0_25px_rgba(42,75,51,0.5)] focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 focus:ring-offset-surface-base disabled:opacity-70 disabled:cursor-not-allowed group font-display"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-3">
+                      <Loader2 size={18} className="animate-spin text-brand-on-primary" />
+                      Autenticando...
+                    </span>
+                  ) : (
+                    <span>Entrar na Plataforma</span>
+                  )}
+                </button>
+                
+                <button 
+                  type="button" 
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full rounded-2xl border border-dashed border-brand-primary/40 bg-brand-primary/5 px-5 py-3.5 text-[10px] font-bold uppercase tracking-[0.15em] text-brand-primary hover:bg-brand-primary/10 transition-all focus:outline-none flex items-center justify-center gap-2"
+                >
+                  Modo Desenvolvedor <span className="opacity-50">• Sem Senha</span>
+                </button>
+              </div>
 
-              {/* Para testar o reset (Isso normalmente seria acessado via link no email) */}
-              <button type="button" onClick={() => setView('reset')} className="w-full text-center text-xs text-slate-600 hover:text-slate-400 mt-2">
-                (Dev: Simular tela de Nova Senha)
+              {/* Para testar o reset */}
+              <button type="button" onClick={() => setView('reset')} className="w-full text-center text-[9px] uppercase font-bold tracking-widest text-brand-muted/30 hover:text-brand-muted/60 transition-colors mt-2">
+                Simular Nova Senha
               </button>
             </form>
           )}
@@ -242,27 +263,27 @@ export function Login() {
               <button 
                 type="button" 
                 onClick={() => setView('login')}
-                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-4"
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-brand-muted hover:text-brand-light transition-colors mb-4"
               >
-                <ArrowLeft size={16} /> Voltar para o login
+                <ArrowLeft size={14} className="text-brand-primary" /> Voltar
               </button>
               
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Recuperar senha</h3>
-                <p className="text-sm text-slate-400">Informe seu e-mail cadastrado para receber um link de redefinição.</p>
+                <h3 className="text-2xl font-bold text-brand-light mb-2 font-display">Recuperar acesso</h3>
+                <p className="text-sm text-brand-muted leading-relaxed">Enviaremos um link de redefinição seguro para o seu e-mail corporativo.</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">E-mail cadastrado</label>
+                <label className="block text-[10px] font-bold text-brand-muted mb-2 uppercase tracking-widest px-1">E-mail corporativo</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#75AB61]">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-primary">
                     <Mail size={18} />
                   </div>
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-xl border border-slate-700/50 bg-[#0b1120]/50 p-3 pl-10 text-sm text-white placeholder-slate-500 focus:border-[#75AB61] focus:ring-2 focus:ring-[#75AB61]/50 focus:outline-none transition-all" 
+                    className="block w-full rounded-2xl border border-surface-border bg-surface-muted/30 p-3.5 pl-11 text-sm text-brand-light placeholder-brand-muted/40 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all outline-none" 
                     placeholder="nome@empresa.com"
                     required
                   />
@@ -272,12 +293,12 @@ export function Login() {
               <button 
                 type="submit" 
                 disabled={isLoading}
-                className="w-full rounded-xl bg-[#75AB61] hover:bg-[#A2C794] px-5 py-3.5 text-sm font-bold text-[#0b1120] transition-all hover:shadow-[0_0_20px_rgba(117,171,97,0.4)] disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full rounded-2xl bg-brand-primary hover:bg-brand-primary/80 px-5 py-4 text-xs font-bold uppercase tracking-[0.2em] text-brand-on-primary transition-all hover:shadow-[0_0_25px_rgba(42,75,51,0.5)] disabled:opacity-70 disabled:cursor-not-allowed font-display"
               >
                 {isLoading ? (
-                  <Loader2 size={18} className="animate-spin text-[#0b1120] mx-auto" />
+                  <Loader2 size={18} className="animate-spin text-brand-on-primary mx-auto" />
                 ) : (
-                  <span>Enviar link de recuperação</span>
+                  <span>Enviar Instruções</span>
                 )}
               </button>
             </form>
@@ -285,91 +306,96 @@ export function Login() {
 
           {/* RECOVERY SENT SUCCESS */}
           {view === 'recovery_sent' && (
-            <div className="space-y-6 text-center py-4 animate-in zoom-in-95 fade-in duration-300">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#75AB61]/10 text-[#75AB61] mb-4">
-                <CheckCircle2 size={32} />
+            <div className="space-y-8 text-center py-6 animate-in zoom-in-95 fade-in duration-300">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary mb-2 shadow-inner border border-brand-primary/20">
+                <CheckCircle2 size={40} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">E-mail enviado!</h3>
-              <p className="text-sm text-slate-400 mb-6">
-                Caso o e-mail <strong>{email}</strong> esteja cadastrado, você receberá um link com as instruções.
-              </p>
+              <div>
+                <h3 className="text-2xl font-bold text-brand-light mb-3 font-display">E-mail enviado!</h3>
+                <p className="text-sm text-brand-muted leading-relaxed">
+                  Verifique sua caixa de entrada em <strong>{email}</strong> para prosseguir com a redefinição.
+                </p>
+              </div>
               <button 
                 onClick={() => setView('login')}
-                className="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition-colors"
+                className="w-full rounded-2xl bg-surface-muted hover:bg-surface-border px-5 py-4 text-[10px] font-bold uppercase tracking-widest text-brand-light transition-all border border-surface-border"
               >
-                Voltar para o login
+                Retornar ao Login
               </button>
             </div>
           )}
 
-          {/* RESET PASSWORD VIEW (Mock via email link) */}
+          {/* RESET PASSWORD VIEW */}
           {view === 'reset' && (
             <form onSubmit={handleReset} className="space-y-6 animate-in slide-in-from-right-4 fade-in duration-300">
               <button 
                 type="button" 
                 onClick={() => setView('login')}
-                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-2"
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-brand-muted hover:text-brand-light transition-colors mb-2"
               >
-                <ArrowLeft size={16} /> Voltar
+                <ArrowLeft size={14} className="text-brand-primary" /> Cancelar
               </button>
 
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="text-[#75AB61]" size={24} />
-                  <h3 className="text-xl font-bold text-white">Criar nova senha</h3>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2.5 rounded-xl bg-brand-primary/10 border border-brand-primary/20">
+                    <ShieldCheck className="text-brand-primary" size={24} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-brand-light font-display">Nova senha</h3>
                 </div>
-                <p className="text-sm text-slate-400">Escolha uma senha forte para sua conta.</p>
+                <p className="text-sm text-brand-muted leading-relaxed">Defina uma credencial forte e única para garantir a segurança da conta.</p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Nova Senha</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#75AB61]">
+                  <label className="block text-[10px] font-bold text-brand-muted mb-2 uppercase tracking-widest px-1">Nova Senha</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-primary">
                       <Lock size={18} />
                     </div>
                     <input 
                       type={showPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="block w-full rounded-xl border border-slate-700/50 bg-[#0b1120]/50 p-3 pl-10 pr-10 text-sm text-white placeholder-slate-500 focus:border-[#75AB61] focus:ring-2 focus:ring-[#75AB61]/50 focus:outline-none transition-all" 
-                      placeholder="Mínimo de 8 caracteres"
+                      className="block w-full rounded-2xl border border-surface-border bg-surface-muted/30 p-3.5 pl-11 pr-11 text-sm text-brand-light placeholder-brand-muted/40 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all" 
+                      placeholder="Mínimo 8 caracteres"
                       required
                     />
                     <button 
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-white transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-brand-muted hover:text-brand-light transition-colors"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                   
-                  {/* Password Strength Indicator */}
+                  {/* Strength Indicator */}
                   {newPassword && (
-                    <div className="mt-2.5 space-y-1.5 animate-in fade-in">
-                      <div className="flex gap-1 h-1">
+                    <div className="mt-3.5 space-y-2 animate-in fade-in">
+                      <div className="flex gap-1.5 h-1.5">
                         {[1, 2, 3, 4].map((level) => (
                           <div 
                             key={level} 
                             className={cn(
-                              "flex-1 rounded-full transition-colors duration-300",
-                              strength.score >= level ? strength.color : "bg-slate-800"
+                              "flex-1 rounded-full transition-all duration-500",
+                              strength.score >= level ? strength.color : "bg-surface-muted/50 shadow-inner"
                             )}
                           />
                         ))}
                       </div>
-                      <p className="text-[10px] text-slate-400 text-right">
-                        Força da senha: <span className={cn("font-medium", strength.color.replace('bg-', 'text-'))}>{strength.text}</span>
-                      </p>
+                      <div className="flex justify-between items-center text-[10px] px-1">
+                        <span className="text-brand-muted/60 font-bold uppercase tracking-tighter">Nível de Segurança</span>
+                        <span className={cn("font-bold uppercase tracking-wider", strength.color.replace('bg-', 'text-'))}>{strength.text}</span>
+                      </div>
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Confirmar Nova Senha</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#75AB61]">
+                  <label className="block text-[10px] font-bold text-brand-muted mb-2 uppercase tracking-widest px-1">Confirmar Senha</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-primary">
                       <Lock size={18} />
                     </div>
                     <input 
@@ -377,16 +403,16 @@ export function Login() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className={cn(
-                        "block w-full rounded-xl border bg-[#0b1120]/50 p-3 pl-10 pr-10 text-sm text-white placeholder-slate-500 transition-all focus:outline-none focus:ring-2",
-                        error ? "border-red-500/50 focus:ring-red-500/50" : "border-slate-700/50 focus:border-[#75AB61] focus:ring-[#75AB61]/50"
+                        "block w-full rounded-2xl border bg-surface-muted/30 p-3.5 pl-11 pr-11 text-sm text-brand-light placeholder-brand-muted/40 transition-all focus:outline-none focus:ring-1 focus:bg-surface-muted/50",
+                        error ? "border-status-failure/50 focus:ring-status-failure/50" : "border-surface-border focus:ring-brand-primary/50 focus:border-brand-primary"
                       )}
-                      placeholder="Repita a senha"
+                      placeholder="Repita a nova senha"
                       required
                     />
                     <button 
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-white transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-brand-muted hover:text-brand-light transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -394,7 +420,7 @@ export function Login() {
                 </div>
 
                 {error && (
-                  <div className="text-red-400 text-xs font-medium bg-red-400/10 p-2.5 rounded-lg border border-red-400/20 text-center">
+                  <div className="text-status-failure text-[11px] font-bold uppercase tracking-tight bg-status-failure/10 p-3 rounded-xl border border-status-failure/20 text-center font-display">
                     {error}
                   </div>
                 )}
@@ -403,12 +429,12 @@ export function Login() {
               <button 
                 type="submit" 
                 disabled={isLoading}
-                className="w-full rounded-xl bg-[#75AB61] hover:bg-[#A2C794] px-5 py-3.5 text-sm font-bold text-[#0b1120] transition-all hover:shadow-[0_0_20px_rgba(117,171,97,0.4)] disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full rounded-2xl bg-brand-primary hover:bg-brand-primary/80 px-5 py-4 text-xs font-bold uppercase tracking-[0.2em] text-brand-on-primary transition-all shadow-lg hover:shadow-[0_0_25px_rgba(42,75,51,0.5)] disabled:opacity-70 disabled:cursor-not-allowed font-display"
               >
                 {isLoading ? (
-                  <Loader2 size={18} className="animate-spin text-[#0b1120] mx-auto" />
+                  <Loader2 size={18} className="animate-spin text-brand-on-primary mx-auto" />
                 ) : (
-                  <span>Redefinir Senha</span>
+                  <span>Atualizar Credenciais</span>
                 )}
               </button>
             </form>
@@ -416,9 +442,13 @@ export function Login() {
 
         </div>
 
-        <div className="mt-8 flex justify-center items-center gap-2.5 text-slate-500 text-xs font-medium">
-          <span className="opacity-70">Powered by</span>
-          <img src="https://raw.githubusercontent.com/synapiens/uteis/refs/heads/main/LogoSynapiensNovo/logo_ajust.png" alt="Synapiens" className="h-[22px] object-contain drop-shadow-md brightness-90 saturate-50 hover:saturate-100 hover:brightness-110 transition-all cursor-pointer" />
+        <div className="mt-12 flex flex-col items-center gap-4 animate-in slide-in-from-bottom-2 fade-in duration-700">
+          <div className="flex items-center gap-3">
+             <span className="h-[1px] w-8 bg-surface-border"></span>
+             <span className="text-brand-muted/50 text-[10px] font-bold uppercase tracking-[0.2em]">Crafted by</span>
+             <span className="h-[1px] w-8 bg-surface-border"></span>
+          </div>
+          <img src="https://raw.githubusercontent.com/synapiens/uteis/refs/heads/main/LogoSynapiensNovo/logo_ajust.png" alt="Synapiens" className="h-[28px] object-contain brightness-105 hover:scale-105 transition-all cursor-pointer" />
         </div>
       </div>
     </div>

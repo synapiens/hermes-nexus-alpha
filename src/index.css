@@ -1,43 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Inter", sans-serif;
   
-  --color-brand-light: #D6E6D0;
-  --color-brand-medium: #A2C794;
-  --color-brand-dark: #75AB61;
-  --color-brand-base: #ACBDA6;
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-tertiary: var(--brand-tertiary);
+  --color-brand-light: var(--brand-light);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-on-primary: var(--brand-on-primary);
   
-  --color-surface: #1A1A2E; 
-  --color-surface-hover: #22223a;
+  --color-surface-base: var(--surface-base);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-border: var(--surface-border);
   
-  --color-brand-grad-start: #75AB61;
-  --color-brand-grad-mid: #A2C794;
-  --color-brand-grad-end: #D6E6D0;
+  --color-status-success: var(--status-success);
+  --color-status-failure: var(--status-failure);
+  --color-status-warning: var(--status-warning);
+}
+
+:root {
+  /* Default: Dark Theme */
+  --brand-primary: #2A4B33;
+  --brand-secondary: #8C7B68;
+  --brand-tertiary: #FAD25A;
+  --brand-light: #F2EFE6;
+  --brand-muted: #8F9E85;
+  --brand-on-primary: #F2EFE6;
+  
+  --surface-base: #161617;
+  --surface-muted: #222224;
+  --surface-border: rgba(143, 158, 133, 0.2);
+  
+  --status-success: #52F5CE;
+  --status-failure: #FA5C4F;
+  --status-warning: #FFCB13;
+}
+
+[data-theme='light'], .light {
+  /* Light Theme Overrides */
+  --brand-primary: #2A4B33; /* Mantemos o verde como identidade */
+  --brand-secondary: #6B5D4D;
+  --brand-tertiary: #D4A71B;
+  --brand-light: #161617; /* Invertido: Texto escuro */
+  --brand-muted: #5C6B53;
+  --brand-on-primary: #F2EFE6;
+  
+  --surface-base: #F7F6F0; /* Off-white de fundo */
+  --surface-muted: #ECE9DE;
+  --surface-border: rgba(42, 75, 51, 0.15);
+  
+  --status-success: #2E7D32;
+  --status-failure: #D32F2F;
+  --status-warning: #ED6C02;
 }
 
 @layer base {
   body {
-    @apply bg-[#0b1120] text-slate-200 font-sans antialiased overflow-x-hidden;
+    @apply bg-surface-base text-brand-light font-sans antialiased overflow-x-hidden transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .brand-gradient {
-    background: linear-gradient(135deg, var(--color-brand-grad-start) 0%, var(--color-brand-grad-mid) 50%, var(--color-brand-grad-end) 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-muted) 100%);
   }
 
   .brand-gradient-text {
-    background: linear-gradient(135deg, var(--color-brand-grad-start) 0%, var(--color-brand-grad-mid) 50%, var(--color-brand-grad-end) 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-muted) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .card-surface {
-    background: rgba(26, 26, 46, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(117, 171, 97, 0.2);
+    @apply bg-surface-muted/70 backdrop-blur-md border border-surface-border;
   }
 }
